@@ -27,18 +27,6 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
-  def merge
-    @article = Article.find(params[:id])
-    #@article2 = Article.find([:merge_with]) rescue nil
-    #if params[:id] == params[:merge_with]
-    #  redirect_to :action => 'index'
-    #  flash[:error] = _("Error, you are trying to add an article to itself")
-    #  return
-    #end
-    @article.merge(params[:merge_with])
-  redirect_to :action => 'edit' , :id => params[:id]
-  end
-
   def edit
     @article = Article.find(params[:id])
     unless @article.access_by? current_user
@@ -175,7 +163,14 @@ class Admin::ContentController < Admin::BaseController
         
     @article.published_at = DateTime.strptime(params[:article][:published_at], "%B %e, %Y %I:%M %p GMT%z").utc rescue Time.parse(params[:article][:published_at]).utc rescue nil
 
-    if request.post? and (!params.has_key?(:merge_with) or params[:merge_with] == "")
+    if request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
+      if @user.admin? 
+        @article.merge_with(params[:merge_with])
+        @article.save
+        redirect_to :action => 'edit', :id => id
+        return
+      end
+    elsif request.post? and (!params.has_key?(:merge_with) or params[:merge_with] == "")
       set_article_author
       save_attachments
       
@@ -186,13 +181,6 @@ class Admin::ContentController < Admin::BaseController
         set_article_categories
         set_the_flash
         redirect_to :action => 'index'
-        return
-      end
-    elsif request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
-      if @user.admin? 
-        @article.merge_with(params[:merge_with])
-        @article.save
-        redirect_to :action => 'edit', :id => id
         return
       end
     end
@@ -259,5 +247,11 @@ class Admin::ContentController < Admin::BaseController
 
   def setup_resources
     @resources = Resource.by_created_at
+  end
+
+  def merge
+    @article = Article.find(params[:id])
+    @article.merge(params[:merge_with])
+    redirect_to :action => 'edit' , :id => params[:id]
   end
 end
