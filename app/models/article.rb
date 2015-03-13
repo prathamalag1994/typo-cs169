@@ -416,15 +416,15 @@ class Article < Content
     user.admin? || user_id == user.id
   end
 
-  def merge_with (id)
-    temp_article = Article.find(id)#Article is the article table
+  def merge_to (id)
+    art = Article.find(id)
     self.body = self.body + temp_article.body.to_s
     comments = Comment.find_all_by_article_id(id)
     comments.each do |comment|
       comment.article_id = self.id
       comment.save
     end
-    temp_article.destroy
+    art.destroy
   end 
 
 

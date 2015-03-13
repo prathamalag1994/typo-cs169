@@ -165,12 +165,13 @@ class Admin::ContentController < Admin::BaseController
 
     if request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
       if @user.admin? 
-        @article.merge_with(params[:merge_with])
+        @article.merge_to(params[:merge_with])
         @article.save
         redirect_to :action => 'edit', :id => id
         return
       end
     elsif request.post? and (!params.has_key?(:merge_with) or params[:merge_with] == "")
+      
       set_article_author
       save_attachments
       
