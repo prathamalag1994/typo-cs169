@@ -27,6 +27,18 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge
+    @article = Article.find(params[:id])
+    #@article2 = Article.find([:merge_with]) rescue nil
+    #if params[:id] == params[:merge_with]
+    #  redirect_to :action => 'index'
+    #  flash[:error] = _("Error, you are trying to add an article to itself")
+    #  return
+    #end
+    @article.merge(params[:merge_with])
+  redirect_to :action => 'edit' , :id => params[:id]
+  end
+
   def edit
     @article = Article.find(params[:id])
     unless @article.access_by? current_user
@@ -140,8 +152,7 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
-
-    @user = User.find(session[:user_id]).admin?
+    @user = User.find(session[:user_id])
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
@@ -179,7 +190,7 @@ class Admin::ContentController < Admin::BaseController
       end
     elsif request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
       if @user.admin? 
-        @article.merge_to(params[:merge_with])
+        @article.merge_with(params[:merge_with])
         @article.save
         redirect_to :action => 'edit', :id => id
         return
@@ -248,11 +259,5 @@ class Admin::ContentController < Admin::BaseController
 
   def setup_resources
     @resources = Resource.by_created_at
-  end
-
-  def merge
-    @article = Article.find(params[:id])
-    @article.merge(params[:merge_with])
-    redirect_to :action => 'edit' , :id => params[:id]
   end
 end

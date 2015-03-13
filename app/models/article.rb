@@ -416,7 +416,7 @@ class Article < Content
     user.admin? || user_id == user.id
   end
 
-  def merge_to (id)
+  def merge_with (id)
     temp_article = Article.find(id)#Article is the article table
     self.body = self.body + temp_article.body.to_s
     comments = Comment.find_all_by_article_id(id)
