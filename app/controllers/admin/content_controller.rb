@@ -163,14 +163,14 @@ class Admin::ContentController < Admin::BaseController
         
     @article.published_at = DateTime.strptime(params[:article][:published_at], "%B %e, %Y %I:%M %p GMT%z").utc rescue Time.parse(params[:article][:published_at]).utc rescue nil
 
-    if request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
+    if request.post? and params.has_key?(:merged) and params[:merged] != ""
       if @user.admin? 
-        @article.merge_to(params[:merge_with])
+        @article.merged(params[:merged])
         @article.save
         redirect_to :action => 'edit', :id => id
         return
       end
-    elsif request.post? and (!params.has_key?(:merge_with) or params[:merge_with] == "")
+    elsif request.post? and (!params.has_key?(:merged) or params[:merged] == "")
       
       set_article_author
       save_attachments
@@ -252,7 +252,7 @@ class Admin::ContentController < Admin::BaseController
 
   def merge
     @article = Article.find(params[:id])
-    @article.merge(params[:merge_with])
+    @article.merge(params[:merged])
     redirect_to :action => 'edit' , :id => params[:id]
   end
 end

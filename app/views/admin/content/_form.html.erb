@@ -151,8 +151,8 @@
 <%if (@article.id and @user.admin?) %>
   <div class=''>
     <h3> <%=_("Merge Articles") %> </h3>
-    <p> Merge ID</p>
-    <%= text_field_tag 'merge_with' %><br/><br/>
+    <p> Merge ID </p>
+    <%= text_field_tag 'merged' %><br/><br/>
     <p><%= submit_tag 'Merge' %>
   </div>
 <% end %>   
