@@ -418,7 +418,7 @@ class Article < Content
 
   def merge_with (id)
     art = Article.find(id)
-    self.body = self.body + temp_article.body.to_s
+    self.body = self.body + art.body.to_s
     comments = Comment.find_all_by_article_id(id)
     comments.each do |comment|
       comment.article_id = self.id
