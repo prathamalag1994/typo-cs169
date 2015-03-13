@@ -140,7 +140,8 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
-    @user = User.find(session[:user_id])
+
+    @user = User.find(session[:user_id]).admin
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
@@ -164,14 +165,14 @@ class Admin::ContentController < Admin::BaseController
     @article.published_at = DateTime.strptime(params[:article][:published_at], "%B %e, %Y %I:%M %p GMT%z").utc rescue Time.parse(params[:article][:published_at]).utc rescue nil
 
     if request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
-      if @user.admin? 
+      if @user? 
         @article.merge_with(params[:merge_with])
         @article.save
         redirect_to :action => 'edit', :id => id
         return
       end
     elsif request.post? and (!params.has_key?(:merge_with) or params[:merge_with] == "")
-      
+
       set_article_author
       save_attachments
       
