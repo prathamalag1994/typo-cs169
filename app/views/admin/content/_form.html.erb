@@ -148,15 +148,14 @@
     </ul>
   </div> 
   
-<%if (@article.id and @user.admin?) %>
-  <div class=''>
-    <h4><%=_("Merge Articles") %></h4>
-    <p class='help-block'>Please write down which article you want to merge with this one </p>
-    <p> Merge ID</p>
-    <%= text_field_tag 'merge_with' %><br/><br/>
-    <p><%= submit_tag 'Merge' %>
-  </div>
-<% end %>   
+  <%if @user %>
+    <div class=''>
+     <h4><%=_("Merge Articles") %></h4>
+     <p> Merge ID</p>
+     <%= text_field_tag 'merge_id' %> <br/>
+     <p><%= submit_tag 'Merge' %>
+   </div>
+  <% end %>   
   </div>
 
 </div>
