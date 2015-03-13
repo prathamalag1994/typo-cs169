@@ -140,7 +140,7 @@ class Admin::ContentController < Admin::BaseController
   def real_action_for(action); { 'add' => :<<, 'remove' => :delete}[action]; end
 
   def new_or_edit
-    
+
     @user = User.find(session[:user_id])
     id = params[:id]
     id = params[:article][:id] if params[:article] && params[:article][:id]
@@ -166,7 +166,7 @@ class Admin::ContentController < Admin::BaseController
 
     if request.post? and params.has_key?(:merge_with) and params[:merge_with] != ""
       if @user.admin? 
-        @article.merge_with(params[:merge_with])
+        @article.merge_to(params[:merge_with])
         @article.save
         redirect_to :action => 'edit', :id => id
         return
