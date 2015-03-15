@@ -428,7 +428,6 @@ class Article < Content
   end 
 
 
-
   protected
 
   def set_published_at
